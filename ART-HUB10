@@ -1,0 +1,395 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+
+--==================================================
+-- CONFIG (แก้ไขตรงนี้)
+--==================================================
+
+-- สีธีม น้ำเงิน + ม่วงอ่อน
+local ACCENT = Color3.fromRGB(110, 140, 255)          -- น้ำเงินหลัก
+local ACCENT2 = Color3.fromRGB(180, 140, 255)         -- ม่วงอ่อน
+local COPIED_COLOR = Color3.fromRGB(255, 160, 80)     -- สีตอนคัดลอกสำเร็จ
+
+-- ลิงก์สคริปต์
+local SCRIPT_LINK = "https://discord.gg/pKS6qzcaqB"
+
+-- ★ ใส่ Asset ID รูปตรงนี้ (อัปโหลดรูปขึ้น Roblox แล้วเอา ID มาใส่)
+local LOGO_IMAGE = "rbxassetid://0"           -- รูป ART HUB-ONE THE (ไอคอนเล็ก)
+local BG_IMAGE = "rbxassetid://0"             -- รูปผู้หญิงถือขวดน้ำหอม (พื้นหลัง)
+
+--==================================================
+-- SCREEN GUI
+--==================================================
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "ATR_NOEHUB_Update"
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = player:WaitForChild("PlayerGui")
+
+--==================================================
+-- MAIN CARD
+--==================================================
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.fromOffset(400, 260)
+frame.Position = UDim2.new(0.5, 0, 0.5, 40)
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.BackgroundColor3 = Color3.fromRGB(12, 14, 28)
+frame.BorderSizePixel = 0
+frame.ClipsDescendants = true
+frame.Parent = gui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 18)
+corner.Parent = frame
+
+--==================================================
+-- พื้นหลังรูปภาพ (ผู้หญิงถือน้ำหอม)
+--==================================================
+
+local bgImage = Instance.new("ImageLabel")
+bgImage.Name = "Background"
+bgImage.Size = UDim2.fromScale(1, 1)
+bgImage.Position = UDim2.fromScale(0, 0)
+bgImage.BackgroundTransparency = 1
+bgImage.Image = BG_IMAGE
+bgImage.ImageTransparency = 0.35          -- ปรับความมืดของรูป
+bgImage.ScaleType = Enum.ScaleType.Crop
+bgImage.ZIndex = 0
+bgImage.Parent = frame
+
+-- Overlay มืดเพื่อให้อ่านข้อความชัด
+local overlay = Instance.new("Frame")
+overlay.Size = UDim2.fromScale(1, 1)
+overlay.BackgroundColor3 = Color3.fromRGB(8, 10, 22)
+overlay.BackgroundTransparency = 0.45
+overlay.BorderSizePixel = 0
+overlay.ZIndex = 1
+overlay.Parent = frame
+
+local overlayCorner = Instance.new("UICorner")
+overlayCorner.CornerRadius = UDim.new(0, 18)
+overlayCorner.Parent = overlay
+
+--==================================================
+-- GRADIENT ทับอีกชั้น
+--==================================================
+
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 30, 55)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(18, 20, 40)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(10, 12, 25))
+})
+gradient.Rotation = 135
+gradient.Parent = frame
+
+--==================================================
+-- ขอบ
+--==================================================
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = ACCENT
+stroke.Transparency = 0.45
+stroke.Thickness = 1.4
+stroke.Parent = frame
+
+--==================================================
+-- เส้น Accent ด้านบน
+--==================================================
+
+local topLine = Instance.new("Frame")
+topLine.Size = UDim2.new(0.6, 0, 0, 3)
+topLine.Position = UDim2.new(0.2, 0, 0, 0)
+topLine.BackgroundColor3 = ACCENT
+topLine.BorderSizePixel = 0
+topLine.ZIndex = 3
+topLine.Parent = frame
+
+local topCorner = Instance.new("UICorner")
+topCorner.CornerRadius = UDim.new(1, 0)
+topCorner.Parent = topLine
+
+--==================================================
+-- ไอคอน (รูป ART HUB)
+--==================================================
+
+local icon = Instance.new("Frame")
+icon.Size = UDim2.fromOffset(48, 48)
+icon.Position = UDim2.new(0, 18, 0, 18)
+icon.BackgroundColor3 = Color3.fromRGB(20, 25, 50)
+icon.BackgroundTransparency = 0.3
+icon.BorderSizePixel = 0
+icon.ZIndex = 4
+icon.Parent = frame
+
+local iconCorner = Instance.new("UICorner")
+iconCorner.CornerRadius = UDim.new(0, 12)
+iconCorner.Parent = icon
+
+local iconStroke = Instance.new("UIStroke")
+iconStroke.Color = ACCENT2
+iconStroke.Transparency = 0.4
+iconStroke.Thickness = 1.2
+iconStroke.Parent = icon
+
+local iconImage = Instance.new("ImageLabel")
+iconImage.Size = UDim2.fromScale(0.85, 0.85)
+iconImage.Position = UDim2.fromScale(0.075, 0.075)
+iconImage.BackgroundTransparency = 1
+iconImage.Image = LOGO_IMAGE
+iconImage.ScaleType = Enum.ScaleType.Fit
+iconImage.ZIndex = 5
+iconImage.Parent = icon
+
+--==================================================
+-- ชื่อสคริปต์
+--==================================================
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -120, 0, 32)
+title.Position = UDim2.new(0, 78, 0, 16)
+title.BackgroundTransparency = 1
+title.Text = "💥ATR-NOEHUB⚡"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 22
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Font = Enum.Font.GothamBold
+title.ZIndex = 4
+title.Parent = frame
+
+--==================================================
+-- ข้อความเวอร์ชัน
+--==================================================
+
+local version = Instance.new("TextLabel")
+version.Size = UDim2.new(1, -120, 0, 18)
+version.Position = UDim2.new(0, 80, 0, 48)
+version.BackgroundTransparency = 1
+version.Text = "มีเวอร์ชันใหม่พร้อมใช้งาน"
+version.TextColor3 = ACCENT2
+version.TextSize = 12
+version.TextXAlignment = Enum.TextXAlignment.Left
+version.Font = Enum.Font.GothamBold
+version.ZIndex = 4
+version.Parent = frame
+
+--==================================================
+-- ปุ่มปิด
+--==================================================
+
+local close = Instance.new("TextButton")
+close.Size = UDim2.fromOffset(34, 34)
+close.Position = UDim2.new(1, -44, 0, 12)
+close.BackgroundTransparency = 1
+close.Text = "×"
+close.TextColor3 = Color3.fromRGB(160, 160, 180)
+close.TextSize = 26
+close.Font = Enum.Font.Gotham
+close.AutoButtonColor = false
+close.ZIndex = 6
+close.Parent = frame
+
+close.MouseEnter:Connect(function()
+	TweenService:Create(close, TweenInfo.new(0.15), {
+		TextColor3 = ACCENT
+	}):Play()
+end)
+
+close.MouseLeave:Connect(function()
+	TweenService:Create(close, TweenInfo.new(0.15), {
+		TextColor3 = Color3.fromRGB(160, 160, 180)
+	}):Play()
+end)
+
+--==================================================
+-- คำอธิบาย
+--==================================================
+
+local subtitle = Instance.new("TextLabel")
+subtitle.Size = UDim2.new(1, -40, 0, 24)
+subtitle.Position = UDim2.new(0, 20, 0, 85)
+subtitle.BackgroundTransparency = 1
+subtitle.Text = "มีสคริปต์หรือตัวโหลดเวอร์ชันใหม่แล้ว"
+subtitle.TextColor3 = Color3.fromRGB(240, 240, 255)
+subtitle.TextSize = 15
+subtitle.TextXAlignment = Enum.TextXAlignment.Left
+subtitle.Font = Enum.Font.GothamMedium
+subtitle.ZIndex = 4
+subtitle.Parent = frame
+
+local description = Instance.new("TextLabel")
+description.Size = UDim2.new(1, -40, 0, 22)
+description.Position = UDim2.new(0, 20, 0, 108)
+description.BackgroundTransparency = 1
+description.Text = "กดปุ่มด้านล่างเพื่อคัดลอกลิงก์ แล้วเปิดในเบราว์เซอร์"
+description.TextColor3 = Color3.fromRGB(160, 165, 190)
+description.TextSize = 13
+description.TextXAlignment = Enum.TextXAlignment.Left
+description.Font = Enum.Font.Gotham
+description.ZIndex = 4
+description.Parent = frame
+
+--==================================================
+-- ปุ่มคัดลอก
+--==================================================
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(1, -40, 0, 50)
+button.Position = UDim2.new(0, 20, 0, 150)
+button.BackgroundColor3 = ACCENT
+button.BorderSizePixel = 0
+button.AutoButtonColor = false
+button.Text = ""
+button.ZIndex = 4
+button.Parent = frame
+
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0, 12)
+buttonCorner.Parent = button
+
+local buttonGradient = Instance.new("UIGradient")
+buttonGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, ACCENT),
+	ColorSequenceKeypoint.new(1, ACCENT2)
+})
+buttonGradient.Rotation = 90
+buttonGradient.Parent = button
+
+local buttonStroke = Instance.new("UIStroke")
+buttonStroke.Color = Color3.fromRGB(255, 255, 255)
+buttonStroke.Transparency = 0.75
+buttonStroke.Thickness = 1
+buttonStroke.Parent = button
+
+local buttonText = Instance.new("TextLabel")
+buttonText.Size = UDim2.fromScale(1, 1)
+buttonText.BackgroundTransparency = 1
+buttonText.Text = "คัดลอกลิงก์สคริปต์"
+buttonText.TextColor3 = Color3.fromRGB(255, 255, 255)
+buttonText.TextSize = 15
+buttonText.Font = Enum.Font.GothamBold
+buttonText.ZIndex = 5
+buttonText.Parent = button
+
+--==================================================
+-- ข้อความด้านล่าง
+--==================================================
+
+local info = Instance.new("TextLabel")
+info.Size = UDim2.new(1, -40, 0, 20)
+info.Position = UDim2.new(0, 20, 1, -28)
+info.BackgroundTransparency = 1
+info.Text = "โปรดใช้เวอร์ชันล่าสุดจากแหล่งที่น่าเชื่อถือเท่านั้น"
+info.TextColor3 = Color3.fromRGB(140, 145, 170)
+info.TextSize = 11
+info.Font = Enum.Font.Gotham
+info.TextXAlignment = Enum.TextXAlignment.Center
+info.ZIndex = 4
+info.Parent = frame
+
+--==================================================
+-- HOVER ปุ่ม
+--==================================================
+
+local originalSize = button.Size
+local originalPosition = button.Position
+
+button.MouseEnter:Connect(function()
+	TweenService:Create(button, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		Size = UDim2.new(1, -36, 0, 52),
+		Position = UDim2.new(0, 18, 0, 149)
+	}):Play()
+	TweenService:Create(buttonStroke, TweenInfo.new(0.18), {
+		Transparency = 0.45
+	}):Play()
+end)
+
+button.MouseLeave:Connect(function()
+	TweenService:Create(button, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		Size = originalSize,
+		Position = originalPosition
+	}):Play()
+	TweenService:Create(buttonStroke, TweenInfo.new(0.18), {
+		Transparency = 0.75
+	}):Play()
+end)
+
+--==================================================
+-- กดปุ่มคัดลอก
+--==================================================
+
+button.MouseButton1Click:Connect(function()
+	-- เอฟเฟกต์กด
+	TweenService:Create(button, TweenInfo.new(0.08), {
+		Size = UDim2.new(1, -44, 0, 48)
+	}):Play()
+	task.wait(0.08)
+	TweenService:Create(button, TweenInfo.new(0.12), {
+		Size = originalSize
+	}):Play()
+
+	-- คัดลอก
+	setclipboard(SCRIPT_LINK)
+
+	buttonText.Text = "คัดลอกแล้ว!"
+	TweenService:Create(button, TweenInfo.new(0.2), {
+		BackgroundColor3 = COPIED_COLOR
+	}):Play()
+
+	task.wait(1.6)
+
+	buttonText.Text = "คัดลอกลิงก์สคริปต์"
+	TweenService:Create(button, TweenInfo.new(0.2), {
+		BackgroundColor3 = ACCENT
+	}):Play()
+end)
+
+--==================================================
+-- ปิด GUI
+--==================================================
+
+local function closeGui()
+	TweenService:Create(frame, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
+		Size = UDim2.fromOffset(360, 230),
+		Position = UDim2.new(0.5, 0, 0.5, 20)
+	}):Play()
+	TweenService:Create(stroke, TweenInfo.new(0.2), {
+		Transparency = 1
+	}):Play()
+	task.wait(0.25)
+	gui:Destroy()
+end
+
+close.MouseButton1Click:Connect(closeGui)
+
+--==================================================
+-- เปิด GUI (Animation)
+--==================================================
+
+frame.Size = UDim2.fromOffset(340, 220)
+
+TweenService:Create(frame, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+	Size = UDim2.fromOffset(400, 260),
+	Position = UDim2.new(0.5, 0, 0.5, 0)
+}):Play()
+
+--==================================================
+-- ขอบกระพริบ
+--==================================================
+
+task.spawn(function()
+	while gui.Parent do
+		TweenService:Create(stroke, TweenInfo.new(1.3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Transparency = 0.7
+		}):Play()
+		task.wait(1.3)
+		TweenService:Create(stroke, TweenInfo.new(1.3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Transparency = 0.3
+		}):Play()
+		task.wait(1.3)
+	end
+end)
